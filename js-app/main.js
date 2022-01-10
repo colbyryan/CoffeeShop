@@ -170,7 +170,7 @@ const DeleteCoffee = deleteCoffee => {
             'Content-Type': 'application/json'
         },
         method: "DELETE",
-        body: JSON.stringify(deleteCoffee)
+        body: JSON.parse(deleteCoffee)
     }).then(resp => resp.json());
 }
 const AddBeanVar = newBeanAdd => {
