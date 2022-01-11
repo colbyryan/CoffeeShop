@@ -146,12 +146,51 @@ deleteCoffeeButton.addEventListener("click", () => {
         })
     })
 })
+const editCoffeeButton = document.querySelector("#edit-coffee-button")
+editCoffeeButton.addEventListener("click", () => {
+    getCoffeeById().then(coffee => {
+        console.log(coffee);
+        let editCoffee = document.querySelector('#edit-coffee');
+
+        let htmlCoffeeEdit = `
+        <form action="" id="coffeeForm">
+        <fieldset>
+          <section id="mood">
+            <label for="coffeeTitle">Bean Name</label>
+            <input type="text" name="coffeeTitle" id="coffeeTitle">${coffee.name}</input>
+            <label for="beanVariety">BeanVariety</label>
+            <select for="beanVarietyId" name="beanVariety">
+           ${'<option value="' + getAllBeanVarieties.id + '">' + getAllBeanVarieties.name + '</option >'}
+            </select >
+          </section >
+                    <button id="save-coffee-button">Save Coffee Bean</button>
+        </fieldset >
+        </form >
+    `
+        deleteCoffee.innerHTML = htmlCoffeeList;
+
+        const deleteButton = document.querySelector('#delete-button')
+        deleteButton.addEventListener("click", event => {
+            event.preventDefault();
+            console.log('DeleteCoffee')
+            const removeCoffee = {
+                id: document.querySelector("input[name='coffeeId']").value,
+            }
+            DeleteCoffee(removeCoffee.id - 1).then(r => {
+                console.log("Response", r)
+            })
+        })
+    })
+})
 
 function getAllBeanVarieties() {
     return fetch(url).then(resp => resp.json());
 }
 function getAllCoffee() {
     return fetch(coffeeUrl).then(resp => resp.json());
+}
+function getCoffeeById(coffee) {
+    return fetch(`${coffeeUrl}${coffee}`).then(resp => resp.json());
 }
 const AddCoffee = addCoffee => {
     return fetch(coffeeUrl, {
@@ -164,14 +203,14 @@ const AddCoffee = addCoffee => {
     }).then(resp => resp.json());
 }
 const DeleteCoffee = deleteCoffee => {
-    return fetch(coffeeUrl, {
+    console.log(deleteCoffee)
+    return fetch(`${coffeeUrl}${deleteCoffee}`, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        method: "DELETE",
-        body: JSON.parse(deleteCoffee)
-    }).then(resp => resp.json());
+        method: "DELETE"
+    }).then(resp => { resp.json(), console.log(resp) });
 }
 const AddBeanVar = newBeanAdd => {
     return fetch(url, {
@@ -181,5 +220,14 @@ const AddBeanVar = newBeanAdd => {
         },
         method: "POST",
         body: JSON.stringify(newBeanAdd)
+    }).then(resp => resp.json());
+}
+const EditCoffee = editCoffee => {
+    return fetch(`${coffeeUrl}${deleteCoffee}`, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "PUT"
     }).then(resp => resp.json());
 }
